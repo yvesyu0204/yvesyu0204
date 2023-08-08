@@ -6,7 +6,7 @@ from linebot.models import  *
 
 app= Flask(__name__)
 
-line_bot_api= LineBotApi("6g1a7vGDrHnSn345ATYX+4jDgimHdpoAlN/e2yY2o717kFNWiujz7EMEstiEo+Lng6G0IGpNC2HPAXmU95roOXyGCsDH3NAxSyksHerrVMfyAkQJw+wnCsjaC8JiM2U9uwJqzbUBlgXUGpbSy3vMdAdB04t89/1O/w1cDnyilFU=")
-handler=WebhookHandler("4d45ff441a8509be7dea6fca607ac7cb")
+line_bot_api= LineBotApi("Cb1zn5Z1dBNV1osEa7otXndEk3Drfx8FgJdhtMzYyy6zEqzZI/Qck6YKb4qhuQThZcwbL6DM7y4hvAhztthuWlsizsVyuKNMBGNOWe7OGsnQGybzol83rn6zIDMwHAlczfM3RnPEyOxLYKIFwyXlQgdB04t89/1O/w1cDnyilFU=")
+handler=WebhookHandler("ec9d3c43144b10b5730b7f6309c5d89b")
 
 
