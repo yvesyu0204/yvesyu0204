@@ -60,9 +60,9 @@ def handle_message(event):
         line_bot_api.push_message(uid,TextSendMessage("請輸入#加股票代號..."))
 
     ##股價查詢
-    if re.match("想知道股價:", msg):
-        msg = msg[5:]
-        btn_msg = stock_reply_other(msg)
+    if re.match("想知道股價[0-9]", msg):
+        stockNumber = msg[5:]
+        btn_msg = stock_reply_other(stockNumber)
         line_bot_api.push_message(uid, btn_msg)
         return 0
     
@@ -99,6 +99,14 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token, 
             TextSendMessage(text=content)
+        )
+
+
+#-----------小幫手-----------
+    if message_text == "@小幫手":
+        button_template = ButtonsTemplate()
+        line_bot_api.reply_message(
+        event.reply_token, button_template
         )
 
 
