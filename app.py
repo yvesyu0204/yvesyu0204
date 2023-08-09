@@ -2,6 +2,7 @@ from line_bot_api import *
 from events.basic import *
 from events.oil import *
 from events.Msg_Template import *
+from model.mongodb import *
 import re
 import twstock
 import datetime
@@ -37,6 +38,7 @@ def handle_message(event):
     message_text =str(event.message.text).lower()
     msg = str(event.message.text).upper().strip() #使用者輸入的內容
     emsg = event.message.text
+    user_name = profile.display_name #使用者名稱
     
     ######## 自動回覆一樣的訊息 #####################
     # message=TextSendMessage(text=event.message.text)
@@ -66,6 +68,17 @@ def handle_message(event):
         line_bot_api.push_message(uid, btn_msg)
         return 0
     
+    #新增使用者關注的股票到mongodb
+    if re.match('關注[0-9]{4}[<>][0-9]', msg ):
+        stockNumber = msg[2:6]
+        content = write_my_stock(uid , user_name ,stockNumber,msg[6:7] , msg[7:])
+        line_bot_api.push_message(uid, TextSendMessage(content))
+        return 0
+    else:
+        content = write_my_stock(uid , user_name ,stockNumber,'未設定','未設定')
+        line_bot_api.push_message(uid, TextSendMessage(content))
+        return 0
+
     if (emsg.startswith('#')):
         text = emsg[1:]
         content =''
