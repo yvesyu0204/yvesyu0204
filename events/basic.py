@@ -15,9 +15,9 @@ def about_us_event(event):
             }
     ]
     text_message = TextSendMessage(text='''$ Master Finance $
-Hello! 您好，歡迎您成為 Master Finance 的好友！
+Hello! 您好，歡迎您成為 小天地 的好友！
                                    
-我是Master 財經小幫手
+我是小天地 財經小幫手
                                    
 -這裡有股票、匯率資訊哦～
 -直接點選下方[圖中]選單功能
@@ -69,4 +69,4 @@ def Usage(event):
              \n💈 油價通知➡輸入查詢股票💸\
              \n💈 匯率通知➡輸入查詢匯率📈\
              \n💈 匯率兌換➡換匯USD/TWD💱\
-             \n💈 股價查詢➡輸入#股價代號#💰 ")
+             \n💈 股價查詢➡輸入#+股價代號 #💰 ")
