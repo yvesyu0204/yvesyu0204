@@ -13,22 +13,28 @@ import datetime
 
 app=Flask(__name__)
 
-line_bot_api= LineBotApi("Cb1zn5Z1dBNV1osEa7otXndEk3Drfx8FgJdhtMzYyy6zEqzZI/Qck6YKb4qhuQThZcwbL6DM7y4hvAhztthuWlsizsVyuKNMBGNOWe7OGsnQGybzol83rn6zIDMwHAlczfM3RnPEyOxLYKIFwyXlQgdB04t89/1O/w1cDnyilFU=")
-handler=WebhookHandler("ec9d3c43144b10b5730b7f6309c5d89b")
+#抓使用者設定他關心的股票
+def cache_users_stock():
+    db=constructor_stock()
+    nameList = db.list_collection_names()
+    users = []
+    for i in range(len(nameList)):
+        collect = db[nameList[i]]
+        cel = list(collect.find({"tag": "stock"}))
+        users.append(cel)
+    return users
 
+#監聽所有來自 /callback 的 POST Request
 @app.route("/callback",methods=["POST"])
 def callback():
     signature= request.headers['X-Line-Signature']
-
     body=request.get_data(as_text=True)
     app.logger.info("Request body: "+body)
-
 
     try:
         handler.handle(body,signature)
     except InvalidSignatureError:
         abort(400)
-
     return "OK"
 
 # 處理訊息
@@ -149,17 +155,59 @@ def handle_message(event):
         content = getExchangeRate(msg)
         line_bot_api.push_message(uid , TextSendMessage(content))
 
+################股價提醒####################
+if re.match("股價提醒" , msg):
+    import schedule
+    import time 
+
+    # 查看當前股價
+    def look_stock_price(stock, condition, price , userID):
+        print(userID)
+        url = "https://tw.stock.yahoo.com/q/q?s=" +stock
+        list_req = requests.get(url)
+        soup = BeautifulSoup(list_req.content , "html.parser")
+        getstock =soup.findAll("b")[1].text
+        content = stock + "當前股市價格為 :" + getstock
+        if condition == '<':
+            content += "\n篩選條件為: < "+ price
+            if float(getstock) < float(price):
+                content += "\n符合" + getstock + " < " + price +"的篩選條件"
+                line_bot_api.push_message(userID, TextSendMessage(text=content))
+        elif condition == '>':
+            content += "\n篩選條件為: > "+ price
+            if float(getstock) > float(price):
+                content += "\n符合" + getstock + " > " + price +"的篩選條件"
+                line_bot_api.push_message(userID, TextSendMessage(text=content))
+        elif condition == '=':
+            content += "\n篩選條件為: = "+ price
+            if float(getstock) > float(price):
+                content += "\n符合" + getstock + " = " + price +"的篩選條件"
+                line_bot_api.push_message(userID, TextSendMessage(text=content))
+def job():
+    print('HH')
+    dataList = cache_users_stock()
+    # print(dataList)
+    for i in range(len(dataList[I])):
+        #print(dataList[I][K])
+        look_stock_price(dataList[i][k]['favorite_stock'], dataList[i][k]['condition'], dataList[i][k]['price'], dataList[i][k]['userID'])
+schedule.every(30).seconds.do(job).tag('daily-tasks-stock'+uid,'second')#每10秒執行一次
+#schedule.every().hour.do(job) #每小時執行一次
+#schedule.every().day.at("17:19").do(job) #每天9點30執行一次
+#schedule.every().monday.do(job) #每周一執行一次
+#schedule.every().wednesday.at("14:45").do(job) #每周三 14:45執行一次
 
 
-
+while True:
+    schedule.run_pending()
+    time.sleep(1)
 
 ################小幫手######################
-    if message_text == "@小幫手":
+"""    if message_text == "@小幫手":
         button_template = ButtonsTemplate()
         line_bot_api.reply_message(
         event.reply_token, button_template
         )
-
+"""
 
 
 @handler.add(FollowEvent)
