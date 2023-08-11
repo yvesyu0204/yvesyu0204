@@ -7,7 +7,7 @@ from model.mongodb import *
 import re
 import twstock
 import datetime
-[]
+import bs4
 
 
 
@@ -157,6 +157,9 @@ def handle_message(event):
         line_bot_api.push_message(uid , TextSendMessage(content))
 
 ################股價提醒####################
+    if re.match('關閉提醒', msg):
+            import schedule
+            schedule.clear()
     if re.match("股價提醒", msg):
             import schedule
             import time
@@ -166,7 +169,7 @@ def handle_message(event):
                 url = 'https://tw.stock.yahoo.com/q/q?s=' + stock
                 list_req = requests.get(url)
                 soup = BeautifulSoup(list_req.content, "html.parser")
-                getstock= soup.findAll('b')[1].text
+                getstock= soup.findAll('span')[11].text
                 content = stock + "當前股市價格為: " +  getstock
                 if condition == '<':
                     content += "\n篩選條件為: < "+ price
