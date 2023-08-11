@@ -49,7 +49,7 @@ def getExchangeRate(msg): #不同貨幣直接換算(非只限於台幣)
 
 #-------------查詢匯率-----------
 def showCurrency(code) -> "JPY": #code 為外幣代碼
-    content = ""
+    content = " "
     currency_name = getCurrencyName(code)
     if currency_name == "無可支援的外幣":return "無可支援的外幣"
     #資料格式 {貨幣代碼:(時間，現今買入，現今賣出，即期買入，即期賣出)，...}
